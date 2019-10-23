@@ -1,0 +1,11 @@
+"/Users/aopalach/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/192.6817.18/CLion.app/Contents/bin/cmake/mac/bin/cmake" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Users/aopalach/video/repos/svt-av1/SVT-AV1
+-- Found YASM: /usr/local/bin/yasm
+-- BUILD_SHARED_LIBS: ON
+-- /Users/aopalach/video/repos/svt-av1/SVT-AV1/Source/Lib/Common/ASM_SSE2:  -Wall -Wextra -Wformat -Wformat-security -fPIE -fPIC -fstack-protector-strong -D_FORTIFY_SOURCE=2 -msse2
+-- /Users/aopalach/video/repos/svt-av1/SVT-AV1/Source/Lib/Common/ASM_SSSE3:  -Wall -Wextra -Wformat -Wformat-security -fPIE -fPIC -fstack-protector-strong -D_FORTIFY_SOURCE=2 -mssse3
+-- /Users/aopalach/video/repos/svt-av1/SVT-AV1/Source/Lib/Common/ASM_SSE4_1:  -Wall -Wextra -Wformat -Wformat-security -fPIE -fPIC -fstack-protector-strong -D_FORTIFY_SOURCE=2 -msse4.1
+-- /Users/aopalach/video/repos/svt-av1/SVT-AV1/Source/Lib/Common/ASM_AVX2:  -Wall -Wextra -Wformat -Wformat-security -fPIE -fPIC -fstack-protector-strong -D_FORTIFY_SOURCE=2 -mavx2
+-- /Users/aopalach/video/repos/svt-av1/SVT-AV1/Source/Lib/Common/ASM_AVX512:  -Wall -Wextra -Wformat -Wformat-security -fPIE -fPIC -fstack-protector-strong -D_FORTIFY_SOURCE=2 -mavx512f -mavx512bw -mavx512dq -mavx512vl
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /Users/aopalach/video/repos/svt-av1/SVT-AV1/cmake-build-debug

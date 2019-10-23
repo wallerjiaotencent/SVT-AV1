@@ -1,0 +1,43 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/COMMON_ASM_AVX2.dir/EbBlend_a64_mask_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/EbCdef_AVX2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/EbCombinedAveragingSAD_Intrinsic_AVX2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/EbComputeSAD_Intrinsic_AVX2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/EbHighbdIntraPrediction_AVX2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/EbIntraPrediction_Intrinsic_AVX2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/EbNoiseExtractAVX2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/EbPackUnPack_Intrinsic_AVX2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/EbPictureOperators_Intrinsic_AVX2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/EbRestorationPick_AVX2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/EbTransforms_Intrinsic_AVX2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/aom_subpixel_8t_intrin_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/av1_inv_txfm_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/av1_quantize_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/cdef_block_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/cfl_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/convolve_2d_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/convolve_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/encodetxb_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/fft_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/highbd_convolve_2d_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/highbd_convolve_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/highbd_fwd_txfm_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/highbd_inv_txfm_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/highbd_jnt_convolve_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/highbd_quantize_intrin_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/jnt_convolve_2d_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/jnt_convolve_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/obmc_sad_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/obmc_variance_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/pickrst_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/selfguided_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/transpose_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/variance_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/warp_plane_avx2.c.o"
+  "CMakeFiles/COMMON_ASM_AVX2.dir/wiener_convolve_avx2.c.o"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang C)
+  include(CMakeFiles/COMMON_ASM_AVX2.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()
