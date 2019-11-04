@@ -854,7 +854,11 @@ EbErrorType signal_derivation_multi_processes_oq(
     // 5                                     pred - 1 + 2
     // 6                                     pred - 1 + 3
     // 7                                     All
+#if TURN_OFF_MDC
+    if (MR_MODE || sc_content_detected )
+#else
     if (MR_MODE || sc_content_detected || sequence_control_set_ptr->static_config.enable_hbd_mode_decision)
+#endif
         picture_control_set_ptr->mdc_depth_level = MAX_MDC_LEVEL;
     else if (picture_control_set_ptr->enc_mode == ENC_M0)
         picture_control_set_ptr->mdc_depth_level = (sequence_control_set_ptr->input_resolution == INPUT_SIZE_576p_RANGE_OR_LOWER) ? MAX_MDC_LEVEL : 6;
@@ -1295,7 +1299,9 @@ EbErrorType signal_derivation_multi_processes_oq(
         // 0                                     OFF
         // 1                                     ON
             picture_control_set_ptr->enable_inter_intra = picture_control_set_ptr->slice_type != I_SLICE ? sequence_control_set_ptr->seq_header.enable_interintra_compound : 0;
-
+#if TURN_OFF_II
+            picture_control_set_ptr->enable_inter_intra = 0;
+#endif 
 #endif
         // Set compound mode      Settings
         // 0                 OFF: No compond mode search : AVG only
@@ -1306,6 +1312,9 @@ EbErrorType signal_derivation_multi_processes_oq(
             picture_control_set_ptr->enc_mode <= ENC_M1 ? 2 : 1;
         else
             picture_control_set_ptr->compound_mode = 0;
+#if TURN_OFF_II      
+            picture_control_set_ptr->compound_mode = 0;
+#endif
 
 
         // set compound_types_to_try

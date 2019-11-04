@@ -45,9 +45,17 @@ static void mode_decision_context_dctor(EbPtr p)
 #endif
 
     EB_DELETE(obj->trans_quant_buffers_ptr);
+#if !OMARK // cfl_temp_luma_recon16bit
     if (obj->hbd_mode_decision)
+#else
+    if (obj->hbd_mode_decision > 0)
+#endif
         EB_FREE_ALIGNED_ARRAY(obj->cfl_temp_luma_recon16bit);
+#if !OMARK
     else
+#else
+    if (obj->hbd_mode_decision != 1)
+#endif
         EB_FREE_ALIGNED_ARRAY(obj->cfl_temp_luma_recon);
     EB_FREE(obj->transform_inner_array_ptr);
     if (obj->is_md_rate_estimation_ptr_owner)
@@ -60,10 +68,20 @@ static void mode_decision_context_dctor(EbPtr p)
     EB_FREE_ARRAY(obj->full_cost_merge_ptr);
     if (obj->md_cu_arr_nsq) {
         EB_FREE_ARRAY(obj->md_cu_arr_nsq[0].av1xd);
+#if !OMARK // neigh_left_recon_16bit neigh_top_recon_16bit
         if (obj->hbd_mode_decision) {
+#else
+        if (obj->hbd_mode_decision > 0) {
+#endif
             EB_FREE_ARRAY(obj->md_cu_arr_nsq[0].neigh_left_recon_16bit[0]);
             EB_FREE_ARRAY(obj->md_cu_arr_nsq[0].neigh_top_recon_16bit[0]);
-        } else {
+        }
+#if OMARK
+        if (obj->hbd_mode_decision != 1) {
+#else
+        else {
+
+#endif
             EB_FREE_ARRAY(obj->md_cu_arr_nsq[0].neigh_left_recon[0]);
             EB_FREE_ARRAY(obj->md_cu_arr_nsq[0].neigh_top_recon[0]);
         }
@@ -82,6 +100,7 @@ EbErrorType mode_decision_context_ctor(
     EbColorFormat         color_format,
     EbFifo                *mode_decision_configuration_input_fifo_ptr,
     EbFifo                *mode_decision_output_fifo_ptr,
+    uint8_t                enable_hbd_mode_decision )
     EbBool                 enable_hbd_mode_decision
 #if PAL_SUP
     ,uint8_t                 cfg_palette
@@ -104,12 +123,21 @@ EbErrorType mode_decision_context_ctor(
     EB_MALLOC(context_ptr->transform_inner_array_ptr, 3120); //refer to EbInvTransform_SSE2.as. case 32x32
 
     // Cfl scratch memory
+#if !OMARK // cfl_temp_luma_recon16bit
     if (context_ptr->hbd_mode_decision) {
+#else
+    if (context_ptr->hbd_mode_decision > 0)
+#endif
         EB_MALLOC_ALIGNED(context_ptr->cfl_temp_luma_recon16bit, sizeof(uint16_t) * 128 * 128);
+#if !OMARK
     } else {
+#else
+    if (context_ptr->hbd_mode_decision != 1)
+#endif
         EB_MALLOC_ALIGNED(context_ptr->cfl_temp_luma_recon, sizeof(uint8_t) * 128 * 128);
+#if !OMARK
     }
-
+#endif
     // MD rate Estimation tables
     EB_MALLOC_ARRAY(context_ptr->md_rate_estimation_ptr, 1);
     context_ptr->is_md_rate_estimation_ptr_owner = EB_TRUE;
@@ -180,10 +208,19 @@ EbErrorType mode_decision_context_ctor(
     context_ptr->md_cu_arr_nsq[0].neigh_top_recon_16bit[0] = NULL;
     EB_MALLOC_ARRAY(context_ptr->md_cu_arr_nsq[0].av1xd, BLOCK_MAX_COUNT_SB_128);
     uint16_t sz = sizeof(uint16_t);
+#if !OMARK // neigh_left_recon_16bit neigh_top_recon_16bit
     if (context_ptr->hbd_mode_decision) {
+#else
+    if (context_ptr->hbd_mode_decision > 0){
+#endif
         EB_MALLOC_ARRAY(context_ptr->md_cu_arr_nsq[0].neigh_left_recon_16bit[0], BLOCK_MAX_COUNT_SB_128 * 128 * 3 * sz);
         EB_MALLOC_ARRAY(context_ptr->md_cu_arr_nsq[0].neigh_top_recon_16bit[0], BLOCK_MAX_COUNT_SB_128 * 128 * 3 * sz);
-    } else {
+    } 
+#if OMARK
+    if (context_ptr->hbd_mode_decision != 1){
+#else
+    else {
+#endif
         EB_MALLOC_ARRAY(context_ptr->md_cu_arr_nsq[0].neigh_left_recon[0], BLOCK_MAX_COUNT_SB_128 * 128 * 3);
         EB_MALLOC_ARRAY(context_ptr->md_cu_arr_nsq[0].neigh_top_recon[0], BLOCK_MAX_COUNT_SB_128 * 128 * 3);
     }
@@ -194,18 +231,24 @@ EbErrorType mode_decision_context_ctor(
         const BlockGeom * blk_geom = get_blk_geom_mds(codedLeafIndex);
         UNUSED(blk_geom);
         context_ptr->md_cu_arr_nsq[codedLeafIndex].av1xd = context_ptr->md_cu_arr_nsq[0].av1xd + codedLeafIndex;
+#if !OMARK
         if (context_ptr->hbd_mode_decision) {
+#endif
              for (int i = 0; i < 3; i++) {
                 size_t offset = (codedLeafIndex * 128 * 3 + i * 128) * sz;
                 context_ptr->md_cu_arr_nsq[codedLeafIndex].neigh_left_recon_16bit[i] = context_ptr->md_cu_arr_nsq[0].neigh_left_recon_16bit[0] + offset;
                 context_ptr->md_cu_arr_nsq[codedLeafIndex].neigh_top_recon_16bit[i] = context_ptr->md_cu_arr_nsq[0].neigh_top_recon_16bit[0] + offset;
             }
+#if !OMARK
         } else {
+#endif
              for (int i = 0; i < 3; i++) {
                 size_t offset = codedLeafIndex * 128 * 3 + i * 128;
                 context_ptr->md_cu_arr_nsq[codedLeafIndex].neigh_left_recon[i] = context_ptr->md_cu_arr_nsq[0].neigh_left_recon[0] + offset;
                 context_ptr->md_cu_arr_nsq[codedLeafIndex].neigh_top_recon[i] = context_ptr->md_cu_arr_nsq[0].neigh_top_recon[0] + offset;
+#if !OMARK
             }
+#endif
         }
 #if PAL_SUP
         if (cfg_palette)
@@ -275,17 +318,28 @@ void reset_mode_decision_neighbor_arrays(PictureControlSet *picture_control_set_
         neighbor_array_unit_reset(picture_control_set_ptr->md_leaf_depth_neighbor_array[depth]);
         neighbor_array_unit_reset(picture_control_set_ptr->mdleaf_partition_neighbor_array[depth]);
 
+#if !OMARK // md_luma_recon_neighbor_array md_tx_depth_1_luma_recon_neighbor_array
         if (!picture_control_set_ptr->hbd_mode_decision) {
+#else
+        if (picture_control_set_ptr->hbd_mode_decision != 1) {
+#endif
             neighbor_array_unit_reset(picture_control_set_ptr->md_luma_recon_neighbor_array[depth]);
             neighbor_array_unit_reset(picture_control_set_ptr->md_tx_depth_1_luma_recon_neighbor_array[depth]);
             neighbor_array_unit_reset(picture_control_set_ptr->md_cb_recon_neighbor_array[depth]);
             neighbor_array_unit_reset(picture_control_set_ptr->md_cr_recon_neighbor_array[depth]);
-        } else {
+        }
+#if OMARK
+        if (picture_control_set_ptr->hbd_mode_decision > 0) {
+#else
+         else {
+#endif
+
             neighbor_array_unit_reset(picture_control_set_ptr->md_luma_recon_neighbor_array16bit[depth]);
             neighbor_array_unit_reset(picture_control_set_ptr->md_tx_depth_1_luma_recon_neighbor_array16bit[depth]);
             neighbor_array_unit_reset(picture_control_set_ptr->md_cb_recon_neighbor_array16bit[depth]);
             neighbor_array_unit_reset(picture_control_set_ptr->md_cr_recon_neighbor_array16bit[depth]);
         }
+
         neighbor_array_unit_reset(picture_control_set_ptr->md_skip_coeff_neighbor_array[depth]);
         neighbor_array_unit_reset(picture_control_set_ptr->md_luma_dc_sign_level_coeff_neighbor_array[depth]);
         neighbor_array_unit_reset(picture_control_set_ptr->md_tx_depth_1_luma_dc_sign_level_coeff_neighbor_array[depth]);
@@ -461,7 +515,7 @@ void reset_mode_decision(
         &context_ptr->full_chroma_lambda,
         (uint8_t)picture_control_set_ptr->parent_pcs_ptr->enhanced_picture_ptr->bit_depth,
         context_ptr->qp_index,
-        picture_control_set_ptr->hbd_mode_decision);
+        context_ptr->hbd_mode_decision);
     // Reset MD rate Estimation table to initial values by copying from md_rate_estimation_array
     if (context_ptr->is_md_rate_estimation_ptr_owner) {
         context_ptr->is_md_rate_estimation_ptr_owner = EB_FALSE;
@@ -566,7 +620,7 @@ void mode_decision_configure_lcu(
         &context_ptr->full_chroma_lambda,
         (uint8_t)picture_control_set_ptr->parent_pcs_ptr->enhanced_picture_ptr->bit_depth,
         context_ptr->qp_index,
-        picture_control_set_ptr->hbd_mode_decision);
+        context_ptr->hbd_mode_decision);
 
     return;
 }

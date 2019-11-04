@@ -6909,8 +6909,11 @@ static const int32_t filter_sets[DUAL_FILTER_SET_SIZE][2] = {
         //x,
         //xd
     );
-
+#if IFS_8BIT_MD
     av1_inter_prediction_function_table[md_context_ptr->hbd_mode_decision](
+#else
+    av1_inter_prediction_function_table[md_context_ptr->hbd_mode_decision](
+#endif
         picture_control_set_ptr,
         candidate_buffer_ptr->candidate_ptr->interp_filters,
         md_context_ptr->cu_ptr,
@@ -6944,7 +6947,11 @@ static const int32_t filter_sets[DUAL_FILTER_SET_SIZE][2] = {
         md_context_ptr->blk_geom->origin_x,
         md_context_ptr->blk_geom->origin_y,
         use_uv,
+#if IFS_8BIT_MD
+        md_context_ptr->hbd_mode_decision ? (uint8_t)picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->static_config.encoder_bit_depth : EB_8BIT);
+#else
         (uint8_t)picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->static_config.encoder_bit_depth);
+#endif
 
     model_rd_for_sb(
         picture_control_set_ptr,
@@ -7001,7 +7008,11 @@ static const int32_t filter_sets[DUAL_FILTER_SET_SIZE][2] = {
                     //                              mi_col,
                     //                              orig_dst,
                     //                              bsize);
+#if IFS_8BIT_MD
                     av1_inter_prediction_function_table[md_context_ptr->hbd_mode_decision](
+#else
+                    av1_inter_prediction_function_table[md_context_ptr->hbd_mode_decision](
+#endif
                         picture_control_set_ptr,
                         candidate_buffer_ptr->candidate_ptr->interp_filters,
                         md_context_ptr->cu_ptr,
@@ -7035,7 +7046,11 @@ static const int32_t filter_sets[DUAL_FILTER_SET_SIZE][2] = {
                         md_context_ptr->blk_geom->origin_x,
                         md_context_ptr->blk_geom->origin_y,
                         use_uv,
+#if IFS_8BIT_MD
+                        md_context_ptr->hbd_mode_decision ? (uint8_t)picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->static_config.encoder_bit_depth : EB_8BIT);
+#else
                         (uint8_t)picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->static_config.encoder_bit_depth);
+#endif
 
                     model_rd_for_sb(
                         picture_control_set_ptr,
@@ -7091,7 +7106,11 @@ static const int32_t filter_sets[DUAL_FILTER_SET_SIZE][2] = {
                     //                              orig_dst,
                     //                              bsize);
 
+#if IFS_8BIT_MD
                     av1_inter_prediction_function_table[md_context_ptr->hbd_mode_decision](
+#else
+                    av1_inter_prediction_function_table[md_context_ptr->hbd_mode_decision](
+#endif
                         picture_control_set_ptr,
                         candidate_buffer_ptr->candidate_ptr->interp_filters,
                         md_context_ptr->cu_ptr,
@@ -7125,7 +7144,11 @@ static const int32_t filter_sets[DUAL_FILTER_SET_SIZE][2] = {
                         md_context_ptr->blk_geom->origin_x,
                         md_context_ptr->blk_geom->origin_y,
                         use_uv,
+#if IFS_8BIT_MD
+                        md_context_ptr->hbd_mode_decision ? (uint8_t)picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->static_config.encoder_bit_depth : EB_8BIT);
+#else
                         (uint8_t)picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->static_config.encoder_bit_depth);
+#endif
 
                     model_rd_for_sb(
                         picture_control_set_ptr,
@@ -7183,7 +7206,11 @@ static const int32_t filter_sets[DUAL_FILTER_SET_SIZE][2] = {
                     //                              orig_dst,
                     //                              bsize);
 
+#if IFS_8BIT_MD
                     av1_inter_prediction_function_table[md_context_ptr->hbd_mode_decision](
+#else
+                    av1_inter_prediction_function_table[md_context_ptr->hbd_mode_decision](
+#endif
                         picture_control_set_ptr,
                         candidate_buffer_ptr->candidate_ptr->interp_filters,
                         md_context_ptr->cu_ptr,
@@ -7217,7 +7244,11 @@ static const int32_t filter_sets[DUAL_FILTER_SET_SIZE][2] = {
                         md_context_ptr->blk_geom->origin_x,
                         md_context_ptr->blk_geom->origin_y,
                         use_uv,
+#if IFS_8BIT_MD
+                        md_context_ptr->hbd_mode_decision ? (uint8_t)picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->static_config.encoder_bit_depth : EB_8BIT);
+#else
                         (uint8_t)picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->static_config.encoder_bit_depth);
+#endif
 
                     model_rd_for_sb(
                         picture_control_set_ptr,
@@ -7403,14 +7434,29 @@ EbErrorType inter_pu_prediction_av1(
 
     uint16_t capped_size = md_context_ptr->interpolation_filter_search_blk_size == 0 ? 4 :
                            md_context_ptr->interpolation_filter_search_blk_size == 1 ? 8 : 16 ;
+#if !IFS_8BIT_MD
 
     if (picture_control_set_ptr->parent_pcs_ptr->interpolation_search_level == IT_SEARCH_OFF ||
         md_context_ptr->hbd_mode_decision)
     {
         candidate_buffer_ptr->candidate_ptr->interp_filters = 0;
     } else {
+#endif
         if (md_context_ptr->md_staging_skip_interpolation_search == EB_FALSE) {
             if (md_context_ptr->blk_geom->bwidth > capped_size && md_context_ptr->blk_geom->bheight > capped_size)
+#if IFS_8BIT_MD
+            {
+                
+                EbBool hbd_mode_decision = md_context_ptr->hbd_mode_decision ;
+                md_context_ptr->hbd_mode_decision = 0;
+
+                if (ref_idx_l0 >= 0) 
+                    ref_pic_list0 = ((EbReferenceObject*)picture_control_set_ptr->ref_pic_ptr_array[list_idx0][ref_idx_l0]->object_ptr)->reference_picture;
+                
+                if (ref_idx_l1 >= 0) 
+                    ref_pic_list1 = ((EbReferenceObject*)picture_control_set_ptr->ref_pic_ptr_array[list_idx1][ref_idx_l1]->object_ptr)->reference_picture;
+
+#endif
                 interpolation_filter_search(
                     picture_control_set_ptr,
                     candidate_buffer_ptr->prediction_ptr_temp,
@@ -7423,9 +7469,25 @@ EbErrorType inter_pu_prediction_av1(
                     &rs,
                     &skip_txfm_sb,
                     &skip_sse_sb);
-        }
-    }
+#if IFS_8BIT_MD
+                md_context_ptr->hbd_mode_decision = hbd_mode_decision;
 
+                if (ref_idx_l0 >= 0) 
+                    ref_pic_list0 = md_context_ptr->hbd_mode_decision ?
+                        ((EbReferenceObject*)picture_control_set_ptr->ref_pic_ptr_array[list_idx0][ref_idx_l0]->object_ptr)->reference_picture16bit
+                        : ((EbReferenceObject*)picture_control_set_ptr->ref_pic_ptr_array[list_idx0][ref_idx_l0]->object_ptr)->reference_picture;
+
+                if (ref_idx_l1 >= 0) 
+                    ref_pic_list1 = md_context_ptr->hbd_mode_decision ?
+                        ((EbReferenceObject*)picture_control_set_ptr->ref_pic_ptr_array[list_idx1][ref_idx_l1]->object_ptr)->reference_picture16bit
+                        : ((EbReferenceObject*)picture_control_set_ptr->ref_pic_ptr_array[list_idx1][ref_idx_l1]->object_ptr)->reference_picture;
+
+            }
+#endif
+        }
+#if !IFS_8BIT_MD
+    }
+#endif
     NeighborArrayUnit            *luma_recon_neighbor_array;
     NeighborArrayUnit            *cb_recon_neighbor_array;
     NeighborArrayUnit            *cr_recon_neighbor_array;

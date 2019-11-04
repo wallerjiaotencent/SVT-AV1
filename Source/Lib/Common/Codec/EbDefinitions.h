@@ -32,6 +32,13 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#define HBD_CLEAN_UP                 1
+
+#define IFS_8BIT_MD	                 1
+#define TURN_OFF_RDOQ                1
+#define TURN_OFF_MDC                 1
+#define TURN_OFF_II                  1
+
 
 /* Note: shutting the macro PAL_SUP will not give SS as pcs->palette_mode = 0
    rate estimation is changed for I frame + enabled sc for P (rate estimation
