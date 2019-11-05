@@ -134,6 +134,7 @@
 #define TILE_COL_TOKEN                   "-tile-columns"
 
 #define SQ_WEIGHT_TOKEN                 "-sqw"
+#define CHROMA_LEVEL_TOKEN               "-chroma"
 
 #define SCENE_CHANGE_DETECTION_TOKEN    "-scd"
 #define INJECTOR_TOKEN                  "-inj"  // no Eval
@@ -267,6 +268,7 @@ static void SetCfgFilmGrain                     (const char *value, EbConfig *cf
 static void SetDisableDlfFlag                   (const char *value, EbConfig *cfg) {cfg->disable_dlf_flag = (EbBool)strtoul(value, NULL, 0);};
 static void SetEnableLocalWarpedMotionFlag      (const char *value, EbConfig *cfg) {cfg->enable_warped_motion           = (int8_t)strtoul(value, NULL, 0);};
 static void SetEnableRestorationFilterFlag      (const char *value, EbConfig *cfg) { cfg->enable_restoration_filtering  = (int8_t)strtol(value, NULL, 0);};
+static void SetChromaLevel                      (const char *value, EbConfig *cfg) { cfg->chroma_level  = (int8_t)strtol(value, NULL, 0);};
 static void SetEnableAtbFlag                    (const char *value, EbConfig *cfg) { cfg->enable_atb              = (int8_t)strtol(value, NULL, 0);};
 static void SetEnableCdfFlag                    (const char *value, EbConfig *cfg) { cfg->enable_cdf              = (int8_t)strtol(value, NULL, 0);};
 static void SetClass12Flag                      (const char *value, EbConfig *cfg) { cfg->combine_class_12        = (int8_t)strtol(value, NULL, 0);};
@@ -434,6 +436,9 @@ config_entry_t config_entry[] = {
     { SINGLE_INPUT, LOOP_FILTER_DISABLE_TOKEN, "LoopFilterDisable", SetDisableDlfFlag },
     // RESTORATION
     { SINGLE_INPUT, RESTORATION_ENABLE_TOKEN, "RestorationFilter", SetEnableRestorationFilterFlag },
+
+    // CHROMA
+    { SINGLE_INPUT, CHROMA_LEVEL_TOKEN, "ChromaLevel", SetChromaLevel },
 
     { SINGLE_INPUT, MFMV_ENABLE_TOKEN             , "Mfmv", SetEnableMfmvFlag           },
     { SINGLE_INPUT, QUANT_FP_TOKEN                ,  "QuantFp", SetQuantFpFlag              },
@@ -1065,8 +1070,10 @@ static EbErrorType VerifySettings(EbConfig *config, uint32_t channelNumber)
         return_error = EB_ErrorBadParameter;
     }
 
-
-
+    if (config->chroma_level > 3 || config->chroma_level < -1) {
+      fprintf(config->error_log_file, "Error instance %u: Invalid Chroma Mode [0 - 3], your input: %d\n", channelNumber + 1, config->target_socket);
+      return_error = EB_ErrorBadParameter;
+    }
     return return_error;
 }
 

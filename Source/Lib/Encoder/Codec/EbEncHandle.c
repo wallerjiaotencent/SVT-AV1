@@ -2715,6 +2715,7 @@ EbErrorType eb_svt_enc_init_parameter(
     config_ptr->pred_me                      = -1;
     config_ptr->bipred_3x3_inject            = -1;
     config_ptr->coumpound_level              = -1;
+    config_ptr->chroma_level                 = -1;
     config_ptr->enable_filter_intra = EB_TRUE;
     config_ptr->in_loop_me_flag = EB_TRUE;
     config_ptr->ext_block_flag = EB_FALSE;
