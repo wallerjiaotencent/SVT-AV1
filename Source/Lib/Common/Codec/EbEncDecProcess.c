@@ -1666,7 +1666,7 @@ void* enc_dec_kernel(void *input_ptr)
             segmentBandIndex = segment_index - segmentRowIndex * segments_ptr->segment_band_count;
             segmentBandSize = (segments_ptr->lcu_band_count * (segmentBandIndex + 1) + segments_ptr->segment_band_count - 1) / segments_ptr->segment_band_count;
 #if HBD_CLEAN_UP // context_ptr
-            context_ptr->md_context->hbd_mode_decision = !sequence_control_set_ptr->static_config.enable_hbd_mode_decision ? 0 : 1;
+            context_ptr->md_context->hbd_mode_decision = !sequence_control_set_ptr->static_config.enable_hbd_mode_decision ? EB_8_BIT_MD : EB_10_BIT_MD;
 #endif
             // Reset Coding Loop State
             reset_mode_decision(

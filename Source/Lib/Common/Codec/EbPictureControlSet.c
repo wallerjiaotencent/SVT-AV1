@@ -172,7 +172,7 @@ void picture_control_set_dctor(EbPtr p)
 #if !HBD_CLEAN_UP // md_luma_recon_neighbor_array16bit md_tx_depth_1_luma_recon_neighbor_array16bit
         if (obj->hbd_mode_decision) {
 #else
-        if (obj->hbd_mode_decision > 0){
+        if (obj->hbd_mode_decision > EB_8_BIT_MD){
 #endif
             EB_DELETE(obj->md_luma_recon_neighbor_array16bit[depth]);
             EB_DELETE(obj->md_tx_depth_1_luma_recon_neighbor_array16bit[depth]);
@@ -180,7 +180,7 @@ void picture_control_set_dctor(EbPtr p)
             EB_DELETE(obj->md_cr_recon_neighbor_array16bit[depth]);
         }
 #if HBD_CLEAN_UP
-        if (obj->hbd_mode_decision != 1){
+        if (obj->hbd_mode_decision != EB_10_BIT_MD){
 #else
          else {
 #endif
@@ -617,7 +617,7 @@ EbErrorType picture_control_set_ctor(
         if (return_error == EB_ErrorInsufficientResources)
             return EB_ErrorInsufficientResources;
 #if HBD_CLEAN_UP //md_luma_recon_neighbor_array
-        if (initDataPtr->hbd_mode_decision != 1) {
+        if (initDataPtr->hbd_mode_decision != EB_10_BIT_MD) {
 #else
         if (!initDataPtr->hbd_mode_decision) {
 #endif
@@ -667,7 +667,7 @@ EbErrorType picture_control_set_ctor(
         }
 #if HBD_CLEAN_UP
 
-        if (initDataPtr->hbd_mode_decision > 0) {
+        if (initDataPtr->hbd_mode_decision > EB_8_BIT_MD) {
 #else
          else {
 #endif

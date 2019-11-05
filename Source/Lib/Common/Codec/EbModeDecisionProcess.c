@@ -48,13 +48,13 @@ static void mode_decision_context_dctor(EbPtr p)
 #if !HBD_CLEAN_UP // cfl_temp_luma_recon16bit
     if (obj->hbd_mode_decision)
 #else
-    if (obj->hbd_mode_decision > 0)
+    if (obj->hbd_mode_decision > EB_8_BIT_MD)
 #endif
         EB_FREE_ALIGNED_ARRAY(obj->cfl_temp_luma_recon16bit);
 #if !HBD_CLEAN_UP
     else
 #else
-    if (obj->hbd_mode_decision != 1)
+    if (obj->hbd_mode_decision != EB_10_BIT_MD)
 #endif
         EB_FREE_ALIGNED_ARRAY(obj->cfl_temp_luma_recon);
     EB_FREE(obj->transform_inner_array_ptr);
@@ -71,13 +71,13 @@ static void mode_decision_context_dctor(EbPtr p)
 #if !HBD_CLEAN_UP // neigh_left_recon_16bit neigh_top_recon_16bit
         if (obj->hbd_mode_decision) {
 #else
-        if (obj->hbd_mode_decision > 0) {
+        if (obj->hbd_mode_decision > EB_8_BIT_MD) {
 #endif
             EB_FREE_ARRAY(obj->md_cu_arr_nsq[0].neigh_left_recon_16bit[0]);
             EB_FREE_ARRAY(obj->md_cu_arr_nsq[0].neigh_top_recon_16bit[0]);
         }
 #if HBD_CLEAN_UP
-        if (obj->hbd_mode_decision != 1) {
+        if (obj->hbd_mode_decision != EB_10_BIT_MD) {
 #else
         else {
 
@@ -126,13 +126,13 @@ EbErrorType mode_decision_context_ctor(
 #if !HBD_CLEAN_UP // cfl_temp_luma_recon16bit
     if (context_ptr->hbd_mode_decision) {
 #else
-    if (context_ptr->hbd_mode_decision > 0)
+    if (context_ptr->hbd_mode_decision > EB_8_BIT_MD)
 #endif
         EB_MALLOC_ALIGNED(context_ptr->cfl_temp_luma_recon16bit, sizeof(uint16_t) * 128 * 128);
 #if !HBD_CLEAN_UP
     } else {
 #else
-    if (context_ptr->hbd_mode_decision != 1)
+    if (context_ptr->hbd_mode_decision != EB_10_BIT_MD)
 #endif
         EB_MALLOC_ALIGNED(context_ptr->cfl_temp_luma_recon, sizeof(uint8_t) * 128 * 128);
 #if !HBD_CLEAN_UP
@@ -211,13 +211,13 @@ EbErrorType mode_decision_context_ctor(
 #if !HBD_CLEAN_UP // neigh_left_recon_16bit neigh_top_recon_16bit
     if (context_ptr->hbd_mode_decision) {
 #else
-    if (context_ptr->hbd_mode_decision > 0){
+    if (context_ptr->hbd_mode_decision > EB_8_BIT_MD){
 #endif
         EB_MALLOC_ARRAY(context_ptr->md_cu_arr_nsq[0].neigh_left_recon_16bit[0], BLOCK_MAX_COUNT_SB_128 * 128 * 3 * sz);
         EB_MALLOC_ARRAY(context_ptr->md_cu_arr_nsq[0].neigh_top_recon_16bit[0], BLOCK_MAX_COUNT_SB_128 * 128 * 3 * sz);
     }
 #if HBD_CLEAN_UP
-    if (context_ptr->hbd_mode_decision != 1){
+    if (context_ptr->hbd_mode_decision != EB_10_BIT_MD){
 #else
     else {
 #endif
@@ -321,7 +321,7 @@ void reset_mode_decision_neighbor_arrays(PictureControlSet *picture_control_set_
 #if !HBD_CLEAN_UP // md_luma_recon_neighbor_array md_tx_depth_1_luma_recon_neighbor_array
         if (!picture_control_set_ptr->hbd_mode_decision) {
 #else
-        if (picture_control_set_ptr->hbd_mode_decision != 1) {
+        if (picture_control_set_ptr->hbd_mode_decision != EB_10_BIT_MD) {
 #endif
             neighbor_array_unit_reset(picture_control_set_ptr->md_luma_recon_neighbor_array[depth]);
             neighbor_array_unit_reset(picture_control_set_ptr->md_tx_depth_1_luma_recon_neighbor_array[depth]);
@@ -329,7 +329,7 @@ void reset_mode_decision_neighbor_arrays(PictureControlSet *picture_control_set_
             neighbor_array_unit_reset(picture_control_set_ptr->md_cr_recon_neighbor_array[depth]);
         }
 #if HBD_CLEAN_UP
-        if (picture_control_set_ptr->hbd_mode_decision > 0) {
+        if (picture_control_set_ptr->hbd_mode_decision > EB_8_BIT_MD) {
 #else
          else {
 #endif
