@@ -215,7 +215,7 @@ EbErrorType mode_decision_context_ctor(
 #endif
         EB_MALLOC_ARRAY(context_ptr->md_cu_arr_nsq[0].neigh_left_recon_16bit[0], BLOCK_MAX_COUNT_SB_128 * 128 * 3 * sz);
         EB_MALLOC_ARRAY(context_ptr->md_cu_arr_nsq[0].neigh_top_recon_16bit[0], BLOCK_MAX_COUNT_SB_128 * 128 * 3 * sz);
-    } 
+    }
 #if HBD_CLEAN_UP
     if (context_ptr->hbd_mode_decision != 1){
 #else

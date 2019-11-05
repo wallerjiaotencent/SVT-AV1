@@ -666,7 +666,7 @@ EbErrorType picture_control_set_ctor(
                 return EB_ErrorInsufficientResources;
         }
 #if HBD_CLEAN_UP
-            
+
         if (initDataPtr->hbd_mode_decision > 0) {
 #else
          else {

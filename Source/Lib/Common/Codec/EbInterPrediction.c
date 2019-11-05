@@ -7446,14 +7446,14 @@ EbErrorType inter_pu_prediction_av1(
             if (md_context_ptr->blk_geom->bwidth > capped_size && md_context_ptr->blk_geom->bheight > capped_size)
 #if IFS_8BIT_MD
             {
-                
+
                 EbBool hbd_mode_decision = md_context_ptr->hbd_mode_decision ;
                 md_context_ptr->hbd_mode_decision = 0;
 
-                if (ref_idx_l0 >= 0) 
+                if (ref_idx_l0 >= 0)
                     ref_pic_list0 = ((EbReferenceObject*)picture_control_set_ptr->ref_pic_ptr_array[list_idx0][ref_idx_l0]->object_ptr)->reference_picture;
-                
-                if (ref_idx_l1 >= 0) 
+
+                if (ref_idx_l1 >= 0)
                     ref_pic_list1 = ((EbReferenceObject*)picture_control_set_ptr->ref_pic_ptr_array[list_idx1][ref_idx_l1]->object_ptr)->reference_picture;
 
 #endif
@@ -7472,12 +7472,12 @@ EbErrorType inter_pu_prediction_av1(
 #if IFS_8BIT_MD
                 md_context_ptr->hbd_mode_decision = hbd_mode_decision;
 
-                if (ref_idx_l0 >= 0) 
+                if (ref_idx_l0 >= 0)
                     ref_pic_list0 = md_context_ptr->hbd_mode_decision ?
                         ((EbReferenceObject*)picture_control_set_ptr->ref_pic_ptr_array[list_idx0][ref_idx_l0]->object_ptr)->reference_picture16bit
                         : ((EbReferenceObject*)picture_control_set_ptr->ref_pic_ptr_array[list_idx0][ref_idx_l0]->object_ptr)->reference_picture;
 
-                if (ref_idx_l1 >= 0) 
+                if (ref_idx_l1 >= 0)
                     ref_pic_list1 = md_context_ptr->hbd_mode_decision ?
                         ((EbReferenceObject*)picture_control_set_ptr->ref_pic_ptr_array[list_idx1][ref_idx_l1]->object_ptr)->reference_picture16bit
                         : ((EbReferenceObject*)picture_control_set_ptr->ref_pic_ptr_array[list_idx1][ref_idx_l1]->object_ptr)->reference_picture;
