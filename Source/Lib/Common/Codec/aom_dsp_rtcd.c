@@ -1841,6 +1841,10 @@ void setup_rtcd_internal(EbAsm asm_type)
               compute8x8_satd_u8_sse4, //Add C
               compute8x8_satd_u8_sse4);
 
+#if AUTO_MAX_PARTITION
+    av1_nn_predict = av1_nn_predict_c;
+    if (flags & HAS_SSE3) av1_nn_predict = av1_nn_predict_sse3;
+#endif
 }
 
 
