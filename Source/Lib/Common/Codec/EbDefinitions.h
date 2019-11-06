@@ -43,9 +43,6 @@ extern "C" {
 #endif
 
 #define AUTO_MAX_PARTITION           1 // Shortcut to skip search depths depending on motion estimation info and statistics
-#if AUTO_MAX_PARTITION
-#define USE_ADAPT_PRED               1
-#endif
 
 #define LESS_RECTANGULAR_CHECK_LEVEL 1 // Shortcut to skip a/b shapes depending on SQ/H/V shape costs
 

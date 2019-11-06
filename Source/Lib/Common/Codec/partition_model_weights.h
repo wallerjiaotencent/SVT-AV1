@@ -18,9 +18,6 @@ extern "C" {
 
 #include "ml.h"
 
-struct NN_CONFIG;
-typedef struct NN_CONFIG NN_CONFIG;
-
 #if 0
 #define FEATURE_SIZE 10
 #define LABEL_SIZE 16

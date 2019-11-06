@@ -55,6 +55,8 @@ EbErrorType generate_md_stage_0_cand(
     uint32_t            *fast_candidate_total_count,
     PictureControlSet   *picture_control_set_ptr);
 
+int16_t eb_av1_dc_quant_QTX(int32_t qindex, int32_t delta, AomBitDepth bit_depth);
+
 #if II_COMP_FLAG
 static INLINE int is_interintra_allowed_bsize(const BlockSize bsize) {
     return (bsize >= BLOCK_8X8) && (bsize <= BLOCK_32X32);
@@ -8350,8 +8352,8 @@ void av1_get_max_min_partition_features(
     for (uint32_t index = 0; index < 64; index++)
     {
 
-        float mv_col;
-        float mv_row;
+        float mv_col = 0;
+        float mv_row = 0;
         unsigned int sse = 0;
 
         uint32_t blk_idx_mds = mds_idx_16x16[index];
@@ -8381,17 +8383,13 @@ void av1_get_max_min_partition_features(
             const MeCandidate *me_block_results_ptr = &me_block_results[me_candidate_index];
             const uint8_t inter_direction = me_block_results_ptr->direction;
             const uint8_t list0_ref_index = me_block_results_ptr->ref_idx_l0;
-            const uint8_t list1_ref_index = me_block_results_ptr->ref_idx_l1;
 
             if (inter_direction == 0 && list0_ref_index == 0) {
 
-                EbAsm asm_type = sequence_control_set_ptr->encode_context_ptr->asm_type;
-                uint32_t  distortion;
                 ModeDecisionCandidateBuffer *candidate_buffer = &(context_ptr->candidate_buffer_ptr_array[0][0]);
                 candidate_buffer->candidate_ptr = &(context_ptr->fast_candidate_array[0]);
                 ModeDecisionCandidate *candidate_ptr = candidate_buffer->candidate_ptr;
                 EbPictureBufferDesc   *prediction_ptr = candidate_buffer->prediction_ptr;
-#if 1
                 const InterpFilters interp_filters = av1_make_interp_filters(EIGHTTAP_REGULAR, EIGHTTAP_REGULAR);
 
                 EbBool is_highbd = (sequence_control_set_ptr->static_config.encoder_bit_depth == 8) ? (uint8_t)EB_FALSE : (uint8_t)EB_TRUE;
@@ -8450,44 +8448,7 @@ void av1_get_max_min_partition_features(
                     blk_geom->origin_y,
                     0,//perform_chroma,
                     (uint8_t)sequence_control_set_ptr->static_config.encoder_bit_depth);
-#else
-                candidate_ptr->type = INTER_MODE;
-                candidate_ptr->distortion_ready = 0;
-                candidate_ptr->use_intrabc = 0;
-                candidate_ptr->merge_flag = EB_FALSE;
-                candidate_ptr->prediction_direction[0] = (EbPredDirection)inter_direction;
-                candidate_ptr->inter_mode = NEWMV;
-                candidate_ptr->pred_mode = NEWMV;
-                candidate_ptr->motion_mode = SIMPLE_TRANSLATION;
-#if II_COMP_FLAG
-                candidate_ptr->is_interintra_used = 0;
-#endif
-                candidate_ptr->is_compound = 0;
-                candidate_ptr->is_new_mv = 1;
-                candidate_ptr->is_zero_mv = 0;
-                candidate_ptr->drl_index = 0;
-                candidate_ptr->ref_mv_index = 0;
-                candidate_ptr->pred_mv_weight = 0;
-                candidate_ptr->ref_frame_type = svt_get_ref_frame_type(inter_direction, list0_ref_index);
-                candidate_ptr->transform_type[PLANE_TYPE_Y] = DCT_DCT;
-                candidate_ptr->transform_type[PLANE_TYPE_UV] = DCT_DCT;
-                candidate_ptr->motion_vector_xl0 = me_results->me_mv_array[me_block_offset][list0_ref_index].x_mv << 1;
-                candidate_ptr->motion_vector_yl0 = me_results->me_mv_array[me_block_offset][list0_ref_index].y_mv << 1;
-                candidate_ptr->motion_vector_xl1 = me_results->me_mv_array[me_block_offset][list0_ref_index].x_mv << 1;
-                candidate_ptr->motion_vector_yl1 = me_results->me_mv_array[me_block_offset][list0_ref_index].y_mv << 1;
-                candidate_ptr->ref_frame_index_l0 = inter_direction == 0 ? list0_ref_index : -1;
-                candidate_ptr->ref_frame_index_l1 = inter_direction == 1 ? list0_ref_index : -1;
-                candidate_ptr->interp_filters = 0;
 
-                // Prediction
-                context_ptr->md_staging_skip_interpolation_search = EB_TRUE;
-                context_ptr->md_staging_skip_inter_chroma_pred = EB_TRUE;
-                ProductPredictionFunTable[INTER_MODE](
-                    context_ptr,
-                    picture_control_set_ptr,
-                    candidate_buffer,
-                    asm_type);
-#endif
                 const aom_variance_fn_ptr_t *fn_ptr = &mefn_ptr[blk_geom->bsize];
 
                 const uint32_t input_origin_index = (cu_origin_y + input_picture_ptr->origin_y) * input_picture_ptr->stride_y + (cu_origin_x + input_picture_ptr->origin_x);
@@ -8550,7 +8511,6 @@ void av1_get_max_min_partition_features(
 
 #define MAX_NUM_CLASSES_MAX_MIN_PART_PRED 4
 BlockSize av1_predict_max_partition(
-    SequenceControlSet  *sequence_control_set_ptr,
     PictureControlSet   *picture_control_set_ptr,
     const float         *features,
     EbPictureBufferDesc *input_picture_ptr,
@@ -8729,23 +8689,19 @@ EB_EXTERN EbErrorType mode_decision_sb(
     }
 
 #if AUTO_MAX_PARTITION
-#if USE_ADAPT_PRED
-    picture_control_set_ptr->sf.auto_max_partition_based_on_simple_motion = ADAPT_PRED; //
-#else
-    picture_control_set_ptr->sf.auto_max_partition_based_on_simple_motion = DIRECT_PRED;//RELAXED_PRED;// ADAPT_PRED; //
-#endif
+    picture_control_set_ptr->sf.auto_max_partition_based_on_simple_motion = ADAPT_PRED; //DIRECT_PRED; //RELAXED_PRED;
     BlockSize max_bsize = BLOCK_128X128;
+    if (context_ptr->enable_auto_max_partition == 1)
+        if (picture_control_set_ptr->slice_type != I_SLICE && sequence_control_set_ptr->static_config.super_block_size == 128) {
+            if ((sb_origin_x + sequence_control_set_ptr->static_config.super_block_size) < picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->seq_header.max_frame_width &&
+                (sb_origin_y + sequence_control_set_ptr->static_config.super_block_size) < picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->seq_header.max_frame_height) {
 
-    if (picture_control_set_ptr->slice_type != I_SLICE && sequence_control_set_ptr->static_config.super_block_size == 128) {
-        if ((sb_origin_x + sequence_control_set_ptr->static_config.super_block_size) < picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->seq_header.max_frame_width &&
-            (sb_origin_y + sequence_control_set_ptr->static_config.super_block_size) < picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->seq_header.max_frame_height) {
+                float features[FEATURE_SIZE_MAX_MIN_PART_PRED] = { 0.0f };
 
-            float features[FEATURE_SIZE_MAX_MIN_PART_PRED] = { 0.0f };
-
-            av1_get_max_min_partition_features(sequence_control_set_ptr, picture_control_set_ptr, context_ptr, features, input_picture_ptr, sb_origin_x, sb_origin_y);
-            max_bsize = MIN(av1_predict_max_partition(sequence_control_set_ptr, picture_control_set_ptr, features, input_picture_ptr, sb_origin_x, sb_origin_y), max_bsize);
+                av1_get_max_min_partition_features(sequence_control_set_ptr, picture_control_set_ptr, context_ptr, features, input_picture_ptr, sb_origin_x, sb_origin_y);
+                max_bsize = MIN(av1_predict_max_partition(picture_control_set_ptr, features, input_picture_ptr, sb_origin_x, sb_origin_y), max_bsize);
+            }
         }
-    }
 #endif
 
     //CU Loop
