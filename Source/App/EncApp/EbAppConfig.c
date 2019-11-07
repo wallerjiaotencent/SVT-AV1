@@ -94,6 +94,11 @@
 #define ALTREF_NFRAMES                  "-altref-nframes"
 #define ENABLE_OVERLAYS                 "-enable-overlays"
 // --- end: ALTREF_FILTERING_SUPPORT
+// --- start: ALTREF_FILTERING_SUPPORT
+#define SUPERRES_MODE                   "-superres-mode"
+#define SUPERRES_DENOM                  "-superres-denom"
+#define SUPERRES_QTHRES                 "-superres-qthres"
+// --- end: SUPER-RESOLUTION SUPPORT
 #define HBD_MD_ENABLE_TOKEN             "-hbd-md"
 #define CONSTRAINED_INTRA_ENABLE_TOKEN  "-constrd-intra"
 #define HDR_INPUT_TOKEN                 "-hdr"
@@ -278,6 +283,11 @@ static void SetAltRefStrength                   (const char *value, EbConfig *cf
 static void SetAltRefNFrames                    (const char *value, EbConfig *cfg) {cfg->altref_nframes = (uint8_t)strtoul(value, NULL, 0);};
 static void SetEnableOverlays                   (const char *value, EbConfig *cfg) { cfg->enable_overlays = (EbBool)strtoul(value, NULL, 0); };
 // --- end: ALTREF_FILTERING_SUPPORT
+// --- start: SUPER-RESOLUTION SUPPORT
+static void SetSuperresMode                     (const char *value, EbConfig *cfg) {cfg->superres_mode = (uint8_t)strtoul(value, NULL, 0);};
+static void SetSuperresDenom                    (const char *value, EbConfig *cfg) {cfg->superres_denom = (uint8_t)strtoul(value, NULL, 0);};
+static void SetSuperresQthres                   (const char *value, EbConfig *cfg) {cfg->superres_qthres = (uint8_t)strtoul(value, NULL, 0);};
+// --- end: SUPER-RESOLUTION SUPPORT
 static void SetEnableHBDModeDecision            (const char *value, EbConfig *cfg) {cfg->enable_hbd_mode_decision = (EbBool)strtoul(value, NULL, 0);};
 static void SetEnableConstrainedIntra           (const char *value, EbConfig *cfg) {cfg->constrained_intra                                             = (EbBool)strtoul(value, NULL, 0);};
 static void SetHighDynamicRangeInput            (const char *value, EbConfig *cfg) {cfg->high_dynamic_range_input            = strtol(value,  NULL, 0);};
@@ -440,6 +450,10 @@ config_entry_t config_entry[] = {
     { SINGLE_INPUT, ALTREF_NFRAMES, "AltRefNframes", SetAltRefNFrames },
     { SINGLE_INPUT, ENABLE_OVERLAYS, "EnableOverlays", SetEnableOverlays },
     // --- end: ALTREF_FILTERING_SUPPORT
+    // Super-resolution support
+    { SINGLE_INPUT, SUPERRES_MODE, "SuperresMode", SetSuperresMode },
+    { SINGLE_INPUT, SUPERRES_DENOM, "SuperresDenom", SetSuperresDenom },
+    { SINGLE_INPUT, SUPERRES_QTHRES, "SuperresQthres", SetSuperresQthres },
 
     { SINGLE_INPUT, SQ_WEIGHT_TOKEN, "SquareWeight", SetSquareWeight },
 
@@ -605,6 +619,11 @@ void eb_config_ctor(EbConfig *config_ptr)
     config_ptr->altref_nframes                       = 7;
     config_ptr->enable_overlays                      = EB_FALSE;
     // --- end: ALTREF_FILTERING_SUPPORT
+
+    // super-resolution support
+    config_ptr->superres_mode                        = 0; // disabled
+    config_ptr->superres_denom                       = 8; // no scaling
+    config_ptr->superres_qthres                      = 43; // random threshold for now
 
     config_ptr->sq_weight                            = 100;
 
