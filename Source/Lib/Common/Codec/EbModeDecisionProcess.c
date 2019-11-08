@@ -100,8 +100,7 @@ EbErrorType mode_decision_context_ctor(
     EbColorFormat         color_format,
     EbFifo                *mode_decision_configuration_input_fifo_ptr,
     EbFifo                *mode_decision_output_fifo_ptr,
-    uint8_t                enable_hbd_mode_decision )
-    EbBool                 enable_hbd_mode_decision
+    uint8_t                enable_hbd_mode_decision
 #if PAL_SUP
     ,uint8_t                 cfg_palette
 #endif

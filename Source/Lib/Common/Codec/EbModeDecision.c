@@ -5852,7 +5852,7 @@ uint32_t product_full_mode_decision(
 
 #if PAL_SUP
         if (cu_ptr->prediction_mode_flag == INTRA_MODE)
-        { 
+        {
             memcpy(&cu_ptr->palette_info.pmi, &candidate_ptr->palette_info.pmi, sizeof(PaletteModeInfo));
             if(svt_av1_allow_palette(context_ptr->sb_ptr->picture_control_set_ptr->parent_pcs_ptr->palette_mode, context_ptr->blk_geom->bsize))
                memcpy(cu_ptr->palette_info.color_idx_map, candidate_ptr->palette_info.color_idx_map, MAX_PALETTE_SQUARE);

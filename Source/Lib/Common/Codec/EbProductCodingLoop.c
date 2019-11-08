@@ -6234,13 +6234,13 @@ void move_cu_data(
     CodingUnit *src_cu,
     CodingUnit *dst_cu)
 {
-#if PAL_SUP  
+#if PAL_SUP
         memcpy(&dst_cu->palette_info.pmi, &src_cu->palette_info.pmi, sizeof(PaletteModeInfo));
         if (svt_av1_allow_palette(pcs->parent_pcs_ptr->palette_mode, context_ptr->blk_geom->bsize)){
-            dst_cu->palette_info.color_idx_map = (uint8_t *)malloc(MAX_PALETTE_SQUARE);          
+            dst_cu->palette_info.color_idx_map = (uint8_t *)malloc(MAX_PALETTE_SQUARE);
             assert(dst_cu->palette_info.color_idx_map != NULL && "palette:Not-Enough-Memory");
             if(dst_cu->palette_info.color_idx_map != NULL)
-                 memcpy(dst_cu->palette_info.color_idx_map, src_cu->palette_info.color_idx_map, MAX_PALETTE_SQUARE);   
+                 memcpy(dst_cu->palette_info.color_idx_map, src_cu->palette_info.color_idx_map, MAX_PALETTE_SQUARE);
             else
                 printf("ERROR palette:Not-Enough-Memory\n");
         }
@@ -6366,11 +6366,11 @@ void move_cu_data_redund(
     CodingUnit *src_cu,
     CodingUnit *dst_cu){
 
-#if PAL_SUP 
+#if PAL_SUP
     memcpy(&dst_cu->palette_info.pmi, &src_cu->palette_info.pmi, sizeof(PaletteModeInfo));
     if (svt_av1_allow_palette(pcs->parent_pcs_ptr->palette_mode, context_ptr->blk_geom->bsize))
         memcpy(dst_cu->palette_info.color_idx_map, src_cu->palette_info.color_idx_map, MAX_PALETTE_SQUARE);
-  
+
 #endif
 #if OBMC_FLAG
     dst_cu->interp_filters = src_cu->interp_filters;
@@ -8509,7 +8509,7 @@ EB_EXTERN EbErrorType mode_decision_sb(
             CodingUnit *src_cu = &context_ptr->md_cu_arr_nsq[redundant_blk_mds];
             CodingUnit *dst_cu = cu_ptr;
 #if PAL_SUP
-         
+
             move_cu_data_redund(picture_control_set_ptr, context_ptr,src_cu, dst_cu);
 #else
             move_cu_data_redund(src_cu, dst_cu);
