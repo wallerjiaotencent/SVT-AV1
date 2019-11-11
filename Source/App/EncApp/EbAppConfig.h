@@ -247,6 +247,12 @@ typedef struct EbConfig
     EbBool                  enable_warped_motion;
 
     /****************************************
+     * Restoration Filtering
+    ****************************************/
+    int8_t                  enable_restoration_filtering;
+    /****************************************/
+    
+    /****************************************
      * OBMC
      ****************************************/
     EbBool                  enable_obmc;

@@ -11,6 +11,7 @@
 *.bin
 *.opensdf
 *.log
+*.swp
 .vscode
 Bin
 Build

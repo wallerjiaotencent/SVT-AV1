@@ -188,6 +188,9 @@ enum {
 #define NSQ_TAB_SIZE                                    6
 #endif
 
+// used for switching tools on/off: 0 off 1 on -1 auto
+#define AUTO_MODE                                -1
+  
 //  Delta QP support
 #define ADD_DELTA_QP_SUPPORT                      1  // Add delta QP support
 #define BLOCK_MAX_COUNT_SB_128                    4421  // TODO: reduce alloction for 64x64
