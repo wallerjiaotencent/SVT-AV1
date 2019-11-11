@@ -140,9 +140,12 @@ The encoder parameters present in the `Sample.cfg` file are listed in this table
 | **HMELevel1** | -hme-l1 | [0 - 1] | Depends on input resolution | Enable HME Level 1 , 0 = OFF, 1 = ON |
 | **HMELevel2** | -hme-l2 | [0 - 1] | Depends on input resolution | Enable HME Level 2 , 0 = OFF, 1 = ON |
 | **InLoopMeFlag** | -in-loop-me | [0 - 1] | Depends on –enc-mode | 0=ME on source samples, 1= ME on recon samples |
-| **LocalWarpedMotion** | -local-warp | [0 - 1] | 0 | Enable warped motion use , 0 = OFF, 1 = ON |
+| **LocalWarpedMotion** | -local-warp | [0/1, -1 for auto] | AUTO | Enable warped motion use , 0 = OFF, 1 = ON, -1 = AUTO |
+| **OBMC** | -obmc | [0/1, -1 for auto] | AUTO | Enable OBMC, 0 = OFF, 1 = ON, -1 = AUTO |
+| **Bipred3x3** | -bipred-3x3 | [0-2, -1 for auto] | AUTO | Set bipred3x3 injection, 0 = OFF, 1 = ON FULL, 2 = Reduced set, -1 = AUTO|
+| **PredMe** | -pred-me | [0-5, -1 for auto] | AUTO | Set predictive me level: <BR>-1 = AUTO<BR>0 = OFF <BR>1 = 7x5 full-pel search + sub-pel refinement off <BR>2 = 7x5 full-pel search +  (H + V) sub-pel refinement only = 4 half-pel + 4 quarter-pel = 8 positions + pred_me_distortion to pa_me_distortion deviation on <BR>3 = 7x5 full-pel search +  (H + V + D only ~ the best) sub-pel refinement = up to 6 half-pel + up to 6  quarter-pel = up to 12 positions + pred_me_distortion to pa_me_distortion deviation on <BR>4 = 7x5 full-pel search +  (H + V + D) sub-pel refinement = 8 half-pel + 8 quarter-pel = 16 positions + pred_me_distortion to pa_me_distortion deviation on <BR>5 = 7x5 full-pel search +  (H + V + D) sub-pel refinement = 8 half-pel + 8 quarter-pel = 16 positions + pred_me_distortion to pa_me_distortion deviation off |
+| **CompoundLevel** | -compound | [0-2, -1 for auto] | AUTO | Set compound mode: <BR>-1 = AUTO<BR>0 = OFF: No compond mode search : AVG only <BR>1 = ON: compond mode search: AVG/DIST/DIFF <BR>2 = ON: AVG/DIST/DIFF/WEDGE |
 | **RestorationFilter** | -restoration-filtering | [0/1, -1 for auto] | AUTO | Enable restoration filtering , 0 = OFF, 1 = ON, -1 = AUTO|
-
 | **Atb** | -atb | [0/1, -1 for auto] | AUTO | Enable atb , 0 = OFF, 1 = ON, -1 = AUTO|
 | **Cdf** | -cdf | [0/1, -1 for auto] | AUTO | Enable cdf, 0 = OFF, 1 = ON, -1 = AUTO|
 | **UpdateCdf** | -updt-cdf | [0/1, -1 for auto] | AUTO | Enable update cdf, 0 = OFF, 1 = ON, -1 = AUTO|

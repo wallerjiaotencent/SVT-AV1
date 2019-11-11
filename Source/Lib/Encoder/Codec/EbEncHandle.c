@@ -2107,7 +2107,7 @@ void CopyApiFromApp(
     sequence_control_set_ptr->static_config.disable_dlf_flag = ((EbSvtAv1EncConfiguration*)pComponentParameterStructure)->disable_dlf_flag;
 
     // Local Warped Motion
-    sequence_control_set_ptr->static_config.enable_warped_motion = EB_TRUE;
+    sequence_control_set_ptr->static_config.enable_warped_motion = ((EbSvtAv1EncConfiguration*)pComponentParameterStructure)->enable_warped_motion;
 
     // Restoration filtering
     sequence_control_set_ptr->static_config.enable_restoration_filtering = ((EbSvtAv1EncConfiguration*)pComponentParameterStructure)->enable_restoration_filtering;
@@ -2159,6 +2159,13 @@ void CopyApiFromApp(
     // OBMC
     sequence_control_set_ptr->static_config.enable_obmc = ((EbSvtAv1EncConfiguration*)pComponentParameterStructure)->enable_obmc;
 
+    // Predictive ME
+    sequence_control_set_ptr->static_config.pred_me = ((EbSvtAv1EncConfiguration*)pComponentParameterStructure)->pred_me;
+    // BiPred 3x3 injection
+    sequence_control_set_ptr->static_config.bipred_3x3_inject = ((EbSvtAv1EncConfiguration*)pComponentParameterStructure)->bipred_3x3_inject;
+    // Compound mode
+    sequence_control_set_ptr->static_config.compound_level = ((EbSvtAv1EncConfiguration*)pComponentParameterStructure)->compound_level;
+    
     // Filter intra prediction
     sequence_control_set_ptr->static_config.enable_filter_intra = ((EbSvtAv1EncConfiguration*)pComponentParameterStructure)->enable_filter_intra;
 
@@ -2685,7 +2692,7 @@ EbErrorType eb_svt_enc_init_parameter(
     config_ptr->hierarchical_levels = 4;
     config_ptr->pred_structure = EB_PRED_RANDOM_ACCESS;
     config_ptr->disable_dlf_flag = EB_FALSE;
-    config_ptr->enable_warped_motion = EB_TRUE;
+    config_ptr->enable_warped_motion = AUTO_MODE;
     config_ptr->enable_atb = AUTO_MODE;
     config_ptr->enable_cdf = AUTO_MODE;
     config_ptr->edge_skp_angle_intra = AUTO_MODE;
@@ -2708,7 +2715,10 @@ EbErrorType eb_svt_enc_init_parameter(
     config_ptr->prune_ref_rec_part = AUTO_MODE;
     config_ptr->nsq_table = AUTO_MODE;
     config_ptr->frame_end_cdf_update = AUTO_MODE;
-    config_ptr->enable_obmc = EB_TRUE;
+    config_ptr->enable_obmc = AUTO_MODE;
+    config_ptr->pred_me = AUTO_MODE;
+    config_ptr->bipred_3x3_inject = AUTO_MODE;
+    config_ptr->compound_level = AUTO_MODE;
     config_ptr->enable_filter_intra = EB_TRUE;
     config_ptr->in_loop_me_flag = EB_TRUE;
     config_ptr->ext_block_flag = EB_FALSE;
