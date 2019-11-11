@@ -190,6 +190,14 @@ EbErrorType CopyConfigurationParameters(
     callback_data->eb_enc_parameters.stat_report = (EbBool)config->stat_report;
     callback_data->eb_enc_parameters.disable_dlf_flag = (EbBool)config->disable_dlf_flag;
     callback_data->eb_enc_parameters.enable_warped_motion = (EbBool)config->enable_warped_motion;
+    callback_data->eb_enc_parameters.enable_restoration_filtering = config->enable_restoration_filtering;
+    callback_data->eb_enc_parameters.enable_atb = config->enable_atb;
+    callback_data->eb_enc_parameters.enable_cdf = config->enable_cdf;
+    callback_data->eb_enc_parameters.combine_class_12 = config->combine_class_12;
+    callback_data->eb_enc_parameters.edge_skp_angle_intra = config->edge_skp_angle_intra;
+    callback_data->eb_enc_parameters.inter_intra_compound = config->inter_intra_compound;
+    callback_data->eb_enc_parameters.fract_search_64 = config->fract_search_64;
+    callback_data->eb_enc_parameters.inject_global_mv = config->inject_global_mv;
     callback_data->eb_enc_parameters.enable_obmc = (EbBool)config->enable_obmc;
     callback_data->eb_enc_parameters.enable_filter_intra = (EbBool)config->enable_filter_intra;
     callback_data->eb_enc_parameters.use_default_me_hme = (EbBool)config->use_default_me_hme;

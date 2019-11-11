@@ -1256,18 +1256,25 @@ EbErrorType signal_derivation_multi_processes_oq(
         // Set atb mode      Settings
         // 0                 OFF: no transform partitioning
         // 1                 ON for INTRA blocks
+
+        if (sequence_control_set_ptr->static_config.enable_atb == AUTO_MODE) {
+	
 #if ATB_10_BIT
-        if (picture_control_set_ptr->enc_mode <= ENC_M1 &&  !sequence_control_set_ptr->static_config.enable_hbd_mode_decision)
+            if (picture_control_set_ptr->enc_mode <= ENC_M1 &&  !sequence_control_set_ptr->static_config.enable_hbd_mode_decision)
 #else
-        if (picture_control_set_ptr->enc_mode <= ENC_M1 && sequence_control_set_ptr->static_config.encoder_bit_depth == EB_8BIT)
+            if (picture_control_set_ptr->enc_mode <= ENC_M1 && sequence_control_set_ptr->static_config.encoder_bit_depth == EB_8BIT)
 #endif
 #if SPEED_OPT
-            picture_control_set_ptr->atb_mode = (MR_MODE || picture_control_set_ptr->temporal_layer_index == 0) ? 1 : 0;
+                picture_control_set_ptr->atb_mode = (MR_MODE || picture_control_set_ptr->temporal_layer_index == 0) ? 1 : 0;
 #else
-            picture_control_set_ptr->atb_mode = 1;
+                picture_control_set_ptr->atb_mode = 1;
 #endif
-        else
-            picture_control_set_ptr->atb_mode = 0;
+            else
+                picture_control_set_ptr->atb_mode = 0;
+	} 
+	else 
+           picture_control_set_ptr->atb_mode = sequence_control_set_ptr->static_config.enable_atb;
+		
 
         // Set skip atb                          Settings
         // 0                                     OFF
@@ -1290,13 +1297,18 @@ EbErrorType signal_derivation_multi_processes_oq(
 
         picture_control_set_ptr->wedge_mode = 0;
 
+        if (sequence_control_set_ptr->static_config.inter_intra_compound == AUTO_MODE)
 #if II_COMP_FLAG
         // inter intra pred                      Settings
         // 0                                     OFF
         // 1                                     ON
+	
             picture_control_set_ptr->enable_inter_intra = picture_control_set_ptr->slice_type != I_SLICE ? sequence_control_set_ptr->seq_header.enable_interintra_compound : 0;
 
 #endif
+        else
+            picture_control_set_ptr->enable_inter_intra = sequence_control_set_ptr->static_config.inter_intra_compound;
+	
         // Set compound mode      Settings
         // 0                 OFF: No compond mode search : AVG only
         // 1                 ON: compond mode search: AVG/DIST/DIFF

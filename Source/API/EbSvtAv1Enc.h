@@ -225,6 +225,41 @@ typedef struct EbSvtAv1EncConfiguration
     * Default is 0. */
     EbBool                   enable_warped_motion;
 
+    /* edge based skip angle intra
+    *
+    * Default is -1. */
+    int8_t                   edge_skp_angle_intra;
+
+    /* inter intra compound
+    *
+    * Default is -1. */
+    int8_t                   inter_intra_compound;
+
+    /* fractional search 64
+    *
+    * Default is -1. */
+    int8_t                   fract_search_64;
+
+    /* global MV injection
+    *
+    * Default is -1. */
+    int8_t                   inject_global_mv;
+
+    /* atb mode
+    *
+    * Default is -1. */
+    int8_t                   enable_atb;
+
+    /* cdf mode
+    *
+    * Default is -1. */
+    int8_t                   enable_cdf;
+
+    /* combine class 12
+    *
+    * Default is -1. */
+    int8_t                   combine_class_12;
+    
     /* Restoration filtering
     *
     * Default is -1. */

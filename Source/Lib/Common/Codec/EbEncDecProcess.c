@@ -1255,16 +1255,21 @@ EbErrorType signal_derivation_enc_dec_kernel_oq(
     // Level                Settings
     // 0                    Injection off (Hsan: but not derivation as used by MV ref derivation)
     // 1                    On
-    if (picture_control_set_ptr->parent_pcs_ptr->sc_content_detected)
-        if (picture_control_set_ptr->enc_mode <= ENC_M1)
+    if (sequence_control_set_ptr->static_config.inject_global_mv == AUTO_MODE) {
+        if (picture_control_set_ptr->parent_pcs_ptr->sc_content_detected)
+            if (picture_control_set_ptr->enc_mode <= ENC_M1)
+                context_ptr->global_mv_injection = 1;
+            else
+                context_ptr->global_mv_injection = 0;
+        else
+        if (picture_control_set_ptr->enc_mode <= ENC_M7)
             context_ptr->global_mv_injection = 1;
         else
             context_ptr->global_mv_injection = 0;
+    }
     else
-    if (picture_control_set_ptr->enc_mode <= ENC_M7)
-        context_ptr->global_mv_injection = 1;
-    else
-        context_ptr->global_mv_injection = 0;
+	context_ptr->global_mv_injection = sequence_control_set_ptr->static_config.inject_global_mv;
+
 #if FIX_NEAREST_NEW
     if (picture_control_set_ptr->enc_mode <= ENC_M0 && picture_control_set_ptr->parent_pcs_ptr->is_used_as_reference_flag)
 #else
@@ -1456,7 +1461,11 @@ EbErrorType signal_derivation_enc_dec_kernel_oq(
     // Combine MD Class1&2
     // 0                    OFF
     // 1                    ON
-    context_ptr->combine_class12 = (picture_control_set_ptr->enc_mode == ENC_M0) ? 0 : 1;
+    if (sequence_control_set_ptr->static_config.combine_class_12 == AUTO_MODE)
+        context_ptr->combine_class12 = (picture_control_set_ptr->enc_mode == ENC_M0) ? 0 : 1;
+    else
+        context_ptr->combine_class12 = sequence_control_set_ptr->static_config.combine_class_12;
+    
 
     // Set interpolation filter search blk size
     // Level                Settings
@@ -1504,21 +1513,27 @@ EbErrorType signal_derivation_enc_dec_kernel_oq(
         context_ptr->redundant_blk = EB_TRUE;
     else
         context_ptr->redundant_blk = EB_FALSE;
-    if (sequence_control_set_ptr->static_config.encoder_bit_depth == EB_8BIT)
+
+    if (sequence_control_set_ptr->static_config.edge_skp_angle_intra == AUTO_MODE) {
+        if (sequence_control_set_ptr->static_config.encoder_bit_depth == EB_8BIT)
 #if FIX_ESTIMATE_INTRA
-        if (MR_MODE)
+            if (MR_MODE)
 #else
-        if (MR_MODE || picture_control_set_ptr->enc_mode == ENC_M0)
+            if (MR_MODE || picture_control_set_ptr->enc_mode == ENC_M0)
 #endif
-            context_ptr->edge_based_skip_angle_intra = 0;
+                context_ptr->edge_based_skip_angle_intra = 0;
+            else
+#if FIX_ESTIMATE_INTRA
+                context_ptr->edge_based_skip_angle_intra = (picture_control_set_ptr->enc_mode == ENC_M0 && picture_control_set_ptr->parent_pcs_ptr->temporal_layer_index == 0) ? 0 : 1;
+#else
+                context_ptr->edge_based_skip_angle_intra = 1;
+#endif
         else
-#if FIX_ESTIMATE_INTRA
-            context_ptr->edge_based_skip_angle_intra = (picture_control_set_ptr->enc_mode == ENC_M0 && picture_control_set_ptr->parent_pcs_ptr->temporal_layer_index == 0) ? 0 : 1;
-#else
-            context_ptr->edge_based_skip_angle_intra = 1;
-#endif
+            context_ptr->edge_based_skip_angle_intra = 0;
+    }
     else
-        context_ptr->edge_based_skip_angle_intra = 0;
+	context_ptr->edge_based_skip_angle_intra = sequence_control_set_ptr->static_config.edge_skp_angle_intra;
+
     if (picture_control_set_ptr->parent_pcs_ptr->sc_content_detected || picture_control_set_ptr->enc_mode == ENC_M0)
         context_ptr->prune_ref_frame_for_rec_partitions = 0;
     else

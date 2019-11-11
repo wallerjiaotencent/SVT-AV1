@@ -142,6 +142,15 @@ The encoder parameters present in the `Sample.cfg` file are listed in this table
 | **InLoopMeFlag** | -in-loop-me | [0 - 1] | Depends on –enc-mode | 0=ME on source samples, 1= ME on recon samples |
 | **LocalWarpedMotion** | -local-warp | [0 - 1] | 0 | Enable warped motion use , 0 = OFF, 1 = ON |
 | **RestorationFilter** | -restoration-filtering | [0/1, -1 for auto] | AUTO | Enable restoration filtering , 0 = OFF, 1 = ON, -1 = AUTO|
+
+| **Atb** | -atb | [0/1, -1 for auto] | AUTO | Enable atb , 0 = OFF, 1 = ON, -1 = AUTO|
+| **Cdf** | -cdf | [0/1, -1 for auto] | AUTO | Enable cdf, 0 = OFF, 1 = ON, -1 = AUTO|
+| **CombineClass12** | -class-12 | [0/1, -1 for auto] | AUTO | Enable combine MD Class1&2, 0 = OFF, 1 = ON, -1 = AUTO|
+| **EdgeSkipAngleIntra** | --intra-edge-skp | [0/1, -1 for auto] | AUTO | Enable skip angle intra based on edge, 0 = OFF, 1 = ON, -1 = AUTO|
+| **InterIntraCompound** | -interintra-comp | [0/1, -1 for auto] | AUTO | Enable inter intra compound, 0 = OFF, 1 = ON, -1 = AUTO|
+| **FractionalSearch64** | -frac-search-64 | [0/1, -1 for auto] | AUTO | Enable fractional search for 64x64, 0 = OFF, 1 = ON, -1 = AUTO|
+| **GlobalMvInjection** | -global-motion-inject | [0/1, -1 for auto] | AUTO | Enable global Motion Vector injection, 0 = OFF, 1 = ON, -1 = AUTO|
+
 | **ExtBlockFlag** | -ext-block | [0 - 1] | Depends on –enc-mode | Enable the non-square block 0=OFF, 1= ON |
 | **ScreenContentMode** | -scm | [0 - 2] | 2 | Enable Screen Content Optimization mode (0: OFF, 1: ON, 2: Content Based Detection) |
 | **SearchAreaWidth** | -search-w | [1 - 256] | Depends on input resolution | Search Area in Width |

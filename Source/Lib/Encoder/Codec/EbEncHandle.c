@@ -2106,6 +2106,21 @@ void CopyApiFromApp(
     // Restoration filtering
     sequence_control_set_ptr->static_config.enable_restoration_filtering = ((EbSvtAv1EncConfiguration*)pComponentParameterStructure)->enable_restoration_filtering;
     
+    // atb mode
+    sequence_control_set_ptr->static_config.enable_atb = ((EbSvtAv1EncConfiguration*)pComponentParameterStructure)->enable_atb;
+    // cdf mode
+    sequence_control_set_ptr->static_config.enable_cdf = ((EbSvtAv1EncConfiguration*)pComponentParameterStructure)->enable_cdf;
+    //combine class 12
+    sequence_control_set_ptr->static_config.combine_class_12 = ((EbSvtAv1EncConfiguration*)pComponentParameterStructure)->combine_class_12;
+    // edge skip angle intra
+    sequence_control_set_ptr->static_config.edge_skp_angle_intra = ((EbSvtAv1EncConfiguration*)pComponentParameterStructure)->edge_skp_angle_intra;
+    // inter intra compoound
+    sequence_control_set_ptr->static_config.inter_intra_compound = ((EbSvtAv1EncConfiguration*)pComponentParameterStructure)->inter_intra_compound;
+    // fractional search 64x64
+    sequence_control_set_ptr->static_config.fract_search_64 = ((EbSvtAv1EncConfiguration*)pComponentParameterStructure)->fract_search_64;
+    // global mv injection
+    sequence_control_set_ptr->static_config.inject_global_mv = ((EbSvtAv1EncConfiguration*)pComponentParameterStructure)->inject_global_mv;
+    
     // OBMC
     sequence_control_set_ptr->static_config.enable_obmc = ((EbSvtAv1EncConfiguration*)pComponentParameterStructure)->enable_obmc;
 
@@ -2636,6 +2651,13 @@ EbErrorType eb_svt_enc_init_parameter(
     config_ptr->pred_structure = EB_PRED_RANDOM_ACCESS;
     config_ptr->disable_dlf_flag = EB_FALSE;
     config_ptr->enable_warped_motion = EB_TRUE;
+    config_ptr->enable_atb = AUTO_MODE;
+    config_ptr->enable_cdf = AUTO_MODE;
+    config_ptr->edge_skp_angle_intra = AUTO_MODE;
+    config_ptr->combine_class_12 = AUTO_MODE;
+    config_ptr->inter_intra_compound = AUTO_MODE;
+    config_ptr->fract_search_64 = AUTO_MODE;
+    config_ptr->inject_global_mv = AUTO_MODE;
     config_ptr->enable_restoration_filtering = AUTO_MODE;
     config_ptr->enable_obmc = EB_TRUE;
     config_ptr->enable_filter_intra = EB_TRUE;

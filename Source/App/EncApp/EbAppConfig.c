@@ -67,6 +67,13 @@
 #define LOOP_FILTER_DISABLE_TOKEN       "-dlf"
 #define LOCAL_WARPED_ENABLE_TOKEN       "-local-warp"
 #define RESTORATION_ENABLE_TOKEN        "-restoration-filtering"
+#define ATB_ENABLE_TOKEN                "-atb"
+#define CDF_ENABLE_TOKEN                "-cdf"
+#define CLASS_12_TOKEN                  "-class-12"
+#define EDGE_SKIP_ANGLE_INTRA_TOKEN     "-intra-edge-skp"
+#define INTER_INTRA_COMPOUND_TOKEN      "-interintra-comp"
+#define FRAC_SEARCH_64_TOKEN            "-frac-search-64"
+#define GLOBAL_MV_INJECT_TOKEN          "-global-motion-inject"
 #define OBMC_TOKEN                      "-obmc"
 #define FILTER_INTRA_TOKEN              "-filter-intra"
 #define USE_DEFAULT_ME_HME_TOKEN        "-use-default-me-hme"
@@ -242,7 +249,14 @@ static void SetCfgUseQpFile                     (const char *value, EbConfig *cf
 static void SetCfgFilmGrain                     (const char *value, EbConfig *cfg) { cfg->film_grain_denoise_strength = strtol(value, NULL, 0); };  //not bool to enable possible algorithm extension in the future
 static void SetDisableDlfFlag                   (const char *value, EbConfig *cfg) {cfg->disable_dlf_flag = (EbBool)strtoul(value, NULL, 0);};
 static void SetEnableLocalWarpedMotionFlag      (const char *value, EbConfig *cfg) {cfg->enable_warped_motion = (EbBool)strtoul(value, NULL, 0);};
-static void SetEnableRestorationFilterFlag      (const char *value, EbConfig *cfg) { cfg->enable_restoration_filtering = strtol(value, NULL, 0);};
+static void SetEnableRestorationFilterFlag      (const char *value, EbConfig *cfg) { cfg->enable_restoration_filtering = (int8_t)strtol(value, NULL, 0);};
+static void SetEnableAtbFlag                    (const char *value, EbConfig *cfg) { cfg->enable_atb = (int8_t)strtol(value, NULL, 0);};
+static void SetEnableCdfFlag                    (const char *value, EbConfig *cfg) { cfg->enable_cdf = (int8_t)strtol(value, NULL, 0);};
+static void SetClass12Flag                      (const char *value, EbConfig *cfg) { cfg->combine_class_12 = (int8_t)strtol(value, NULL, 0);};
+static void SetEdgeSkipAngleIntraFlag           (const char *value, EbConfig *cfg) { cfg->edge_skp_angle_intra = (int8_t)strtol(value, NULL, 0);};
+static void SetInterIntraCompoundFlag           (const char *value, EbConfig *cfg) { cfg->inter_intra_compound = (int8_t)strtol(value, NULL, 0);};
+static void SetFractionalSearch64Flag           (const char *value, EbConfig *cfg) { cfg->fract_search_64 = (int8_t)strtol(value, NULL, 0);};
+static void SetInjectGlobalMVFlag               (const char *value, EbConfig *cfg) { cfg->inject_global_mv = (int8_t)strtol(value, NULL, 0);};
 static void SetEnableObmcFlag                   (const char *value, EbConfig *cfg) {cfg->enable_obmc = (EbBool)strtoul(value, NULL, 0);};
 static void SetEnableFilterIntraFlag            (const char *value, EbConfig *cfg) {cfg->enable_filter_intra = (EbBool)strtoul(value, NULL, 0);};
 static void SetEnableHmeFlag                    (const char *value, EbConfig *cfg) {cfg->enable_hme_flag = (EbBool)strtoul(value, NULL, 0);};
@@ -385,6 +399,20 @@ config_entry_t config_entry[] = {
 
     // DLF
     { SINGLE_INPUT, LOOP_FILTER_DISABLE_TOKEN, "LoopFilterDisable", SetDisableDlfFlag },
+    // ATB
+    { SINGLE_INPUT, ATB_ENABLE_TOKEN, "Atb", SetEnableAtbFlag },
+    // CDF
+    { SINGLE_INPUT, CDF_ENABLE_TOKEN, "Cdf", SetEnableCdfFlag },
+    // CLASS 12
+    { SINGLE_INPUT, CLASS_12_TOKEN, "CombineClass12", SetClass12Flag },
+    // EDGE SKIP ANGLE INTRA
+    { SINGLE_INPUT, EDGE_SKIP_ANGLE_INTRA_TOKEN, "EdgeSkipAngleIntra", SetEdgeSkipAngleIntraFlag },
+    // INTER INTRA COMPOUND
+    { SINGLE_INPUT, INTER_INTRA_COMPOUND_TOKEN, "InterIntraCompound", SetInterIntraCompoundFlag },
+    // FRACTIONAL SEARCH 64x64
+    { SINGLE_INPUT, FRAC_SEARCH_64_TOKEN, "FractionalSearch64", SetFractionalSearch64Flag },
+    // GLOBAL MV INJECTION
+    { SINGLE_INPUT, GLOBAL_MV_INJECT_TOKEN, "GlobalMvInjection", SetInjectGlobalMVFlag },
     // RESTORATION
     { SINGLE_INPUT, RESTORATION_ENABLE_TOKEN, "RestorationFilter", SetEnableRestorationFilterFlag },
     // LOCAL WARPED MOTION
@@ -512,6 +540,13 @@ void eb_config_ctor(EbConfig *config_ptr)
     config_ptr->pred_structure                        = 2;
     config_ptr->disable_dlf_flag                     = EB_FALSE;
     config_ptr->enable_warped_motion                 = EB_FALSE;
+    config_ptr->enable_atb                           = -1;
+    config_ptr->enable_cdf                           = -1;
+    config_ptr->combine_class_12                     = -1;
+    config_ptr->edge_skp_angle_intra                 = -1;
+    config_ptr->inter_intra_compound                 = -1;
+    config_ptr->fract_search_64                      = -1;
+    config_ptr->inject_global_mv                     = -1;
     config_ptr->enable_restoration_filtering         = -1;
     config_ptr->enable_obmc                          = EB_TRUE;
     config_ptr->enable_filter_intra                  = EB_TRUE;
@@ -948,6 +983,41 @@ static EbErrorType VerifySettings(EbConfig *config, uint32_t channelNumber)
          return_error = EB_ErrorBadParameter;
      }
 
+     if (config->enable_atb != 0 && config->enable_atb != 1 && config->enable_atb != -1) {
+         fprintf(config->error_log_file, "Error instance %u: Invalid atb flag [0/1 or -1 for auto], your input: %d\n", channelNumber + 1, config->enable_atb);
+         return_error = EB_ErrorBadParameter;
+     }
+     
+     if (config->enable_cdf != 0 && config->enable_cdf != 1 && config->enable_cdf != -1) {
+         fprintf(config->error_log_file, "Error instance %u: Invalid cdf flag [0/1 or -1 for auto], your input: %d\n", channelNumber + 1, config->enable_cdf);
+         return_error = EB_ErrorBadParameter;
+     }
+
+     if (config->combine_class_12 != 0 && config->combine_class_12 != 1 && config->combine_class_12 != -1) {
+         fprintf(config->error_log_file, "Error instance %u: Invalid combine MD Class1&2 flag [0/1 or -1 for auto], your input: %d\n", channelNumber + 1, config->combine_class_12);
+         return_error = EB_ErrorBadParameter;
+     }
+     
+     if (config->edge_skp_angle_intra != 0 && config->edge_skp_angle_intra != 1 && config->edge_skp_angle_intra != -1) {
+         fprintf(config->error_log_file, "Error instance %u: Invalid Enable skip angle intra based on edge flag [0/1 or -1 for auto], your input: %d\n", channelNumber + 1, config->edge_skp_angle_intra);
+         return_error = EB_ErrorBadParameter;
+     }
+     
+     if (config->inter_intra_compound != 0 && config->inter_intra_compound != 1 && config->inter_intra_compound != -1) {
+         fprintf(config->error_log_file, "Error instance %u: Invalid Inter Intra Compound flag [0/1 or -1 for auto], your input: %d\n", channelNumber + 1, config->inter_intra_compound);
+         return_error = EB_ErrorBadParameter;
+     }
+     
+     if (config->fract_search_64 != 0 && config->fract_search_64 != 1 && config->fract_search_64 != -1) {
+         fprintf(config->error_log_file, "Error instance %u: Invalid fractional search for 64x64 flag [0/1 or -1 for auto], your input: %d\n", channelNumber + 1, config->fract_search_64);
+         return_error = EB_ErrorBadParameter;
+     }
+     
+     if (config->inject_global_mv != 0 && config->inject_global_mv != 1 && config->inject_global_mv != -1) {
+         fprintf(config->error_log_file, "Error instance %u: Invalid global Motion Vector injection flag [0/1 or -1 for auto], your input: %d\n", channelNumber + 1, config->inject_global_mv);
+         return_error = EB_ErrorBadParameter;
+     }
+     
     // Local Warped Motion
     if (config->enable_warped_motion != 0 && config->enable_warped_motion != 1) {
         fprintf(config->error_log_file, "Error instance %u: Invalid warped motion flag [0 - 1], your input: %d\n", channelNumber + 1, config->target_socket);
