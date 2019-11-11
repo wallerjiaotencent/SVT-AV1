@@ -2716,6 +2716,7 @@ EbErrorType eb_svt_enc_init_parameter(
     config_ptr->nsq_table = AUTO_MODE;
     config_ptr->frame_end_cdf_update = AUTO_MODE;
     config_ptr->enable_obmc = AUTO_MODE;
+    config_ptr->chroma_level = AUTO_MODE;
     config_ptr->pred_me = AUTO_MODE;
     config_ptr->bipred_3x3_inject = AUTO_MODE;
     config_ptr->compound_level = AUTO_MODE;

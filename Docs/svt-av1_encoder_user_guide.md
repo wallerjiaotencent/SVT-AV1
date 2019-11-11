@@ -190,6 +190,7 @@ The encoder parameters present in the `Sample.cfg` file are listed in this table
 | **TileRow** | -tile-rows | [0-6] | 0 | log2 of tile rows |
 | **TileCol** | -tile-columns | [0-6] | 0 | log2 of tile columns |
 | **UnrestrictedMotionVector** | -umv | [0-1] | 1 | Enables or disables unrestriced motion vectors, 0 = OFF(motion vectors are constrained within tile boundary), 1 = ON. For MCTS support, set -umv 0 |
+| **ChromaMode** | -chroma | [0-3] | Auto | Chroma Mode <br>0 = Full chroma search @ MD  <br>1 = Fast chroma search @ MD  <br>2 = Chroma blind @ MD + CFL @ EP <br>3 = Chroma blind @ MD + no CFL @ EP |
 | **PaletteMode** | -palette | [0 - 6] | -1 | Enable Palette mode (-1: Auto Mode(ON at level6 when SC is detected), 0: OFF 1: ON Level 1, ...6: ON Level6 ) |
 | **SquareWeight** | -sqw | 0 for off and any whole number percentage | 100 | Weighting applied to square/h/v shape costs when deciding if a and b shapes could be skipped. Set to 100 for neutral weighting, lesser than 100 for faster encode and BD-Rate loss, and greater than 100 for slower encode and BD-Rate gain|
 ## Appendix A Encoder Parameters
