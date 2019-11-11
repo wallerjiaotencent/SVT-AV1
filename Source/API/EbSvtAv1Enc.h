@@ -265,6 +265,63 @@ typedef struct EbSvtAv1EncConfiguration
     * Default is -1. */
     int8_t                   enable_restoration_filtering;
     
+    /* motion field motion vector
+    *
+    *  Default is -1. */
+    int8_t                enable_mfmv;
+    /* quantize fp
+    *
+    * Default is -1. */
+    int8_t                quant_fp;
+    /* redundant block
+    *
+    * Default is -1. */
+    int8_t                enable_redundant_blk;
+    /* trellis quant coeff optimization
+    *
+    * Default is -1. */
+    int8_t                enable_trellis;
+    /* spatial sse in full loop
+    *
+    * Default is -1. */
+    int8_t                spatial_sse_fl;
+    /* update cdf
+    *
+    * Default is -1. */
+    int8_t                update_cdf;
+    /* subpel
+    *
+    * Default is -1. */
+    int8_t                enable_subpel;
+    /* over boundry block
+    *
+    * Default is -1. */
+    int8_t                over_bndry_blk;
+    /* new nearest comb injection
+    *
+    * Default is -1. */
+    int8_t                new_nearest_comb_inject;
+    /* nx4 4xn parent motion vector injection
+    *
+    * Default is -1. */
+    int8_t                nx4_4xn_parent_mv_inject;
+    /* prune unipred at me
+    *
+    * Default is -1. */
+    int8_t                prune_unipred_me;
+    /* prune ref frame for rec partitions
+    *
+    * Default is -1. */
+    int8_t                prune_ref_rec_part;
+    /* nsq table
+    *
+    * Default is -1. */
+    int8_t                nsq_table;
+    /* frame end cdf update
+    *
+    * Default is -1. */
+    int8_t                frame_end_cdf_update;
+    
     /* OBMC
     *
     * Default is 1. */

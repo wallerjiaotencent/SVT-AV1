@@ -857,7 +857,11 @@ EbErrorType signal_derivation_multi_processes_oq(
     if (MR_MODE || sc_content_detected || sequence_control_set_ptr->static_config.enable_hbd_mode_decision)
         picture_control_set_ptr->mdc_depth_level = MAX_MDC_LEVEL;
     else if (picture_control_set_ptr->enc_mode == ENC_M0)
+#if M1_mdc
+        picture_control_set_ptr->mdc_depth_level = 5;
+#else
         picture_control_set_ptr->mdc_depth_level = (sequence_control_set_ptr->input_resolution == INPUT_SIZE_576p_RANGE_OR_LOWER) ? MAX_MDC_LEVEL : 6;
+#endif
     else
         picture_control_set_ptr->mdc_depth_level = MAX_MDC_LEVEL; // Not tuned yet.
 #endif
@@ -898,9 +902,12 @@ EbErrorType signal_derivation_multi_processes_oq(
             picture_control_set_ptr->nsq_search_level = NSQ_SEARCH_LEVEL7;
 #endif
         else if (picture_control_set_ptr->enc_mode <= ENC_M1)
+#if M1_nsq
+            picture_control_set_ptr->nsq_search_level = (picture_control_set_ptr->is_used_as_reference_flag) ? NSQ_SEARCH_LEVEL6 : NSQ_SEARCH_LEVEL3;
+#else
             picture_control_set_ptr->nsq_search_level = NSQ_SEARCH_LEVEL6;
-
-        else if (picture_control_set_ptr->enc_mode <= ENC_M2)
+#endif
+        else if (picture_control_set_ptr->enc_mode <= ENC_M0)
             if (picture_control_set_ptr->is_used_as_reference_flag)
                 picture_control_set_ptr->nsq_search_level = NSQ_SEARCH_LEVEL5;
             else
@@ -1329,14 +1336,22 @@ EbErrorType signal_derivation_multi_processes_oq(
         // Set frame end cdf update mode      Settings
         // 0                                     OFF
         // 1                                     ON
-        if (picture_control_set_ptr->enc_mode == ENC_M0)
-            picture_control_set_ptr->frame_end_cdf_update_mode = 1;
+        if (sequence_control_set_ptr->static_config.frame_end_cdf_update == AUTO_MODE) 
+            if (picture_control_set_ptr->enc_mode == ENC_M0)
+                picture_control_set_ptr->frame_end_cdf_update_mode = 1;
+            else
+                picture_control_set_ptr->frame_end_cdf_update_mode = 0;
         else
-            picture_control_set_ptr->frame_end_cdf_update_mode = 0;
-        if (picture_control_set_ptr->sc_content_detected || picture_control_set_ptr->enc_mode == ENC_M0 || picture_control_set_ptr->enc_mode >= ENC_M4)
-            picture_control_set_ptr->prune_unipred_at_me = 0;
+            picture_control_set_ptr->frame_end_cdf_update_mode = sequence_control_set_ptr->static_config.frame_end_cdf_update;
+		
+        if (sequence_control_set_ptr->static_config.prune_unipred_me == AUTO_MODE)
+            if (picture_control_set_ptr->sc_content_detected || picture_control_set_ptr->enc_mode == ENC_M0 || picture_control_set_ptr->enc_mode >= ENC_M4)
+                picture_control_set_ptr->prune_unipred_at_me = 0;
+            else
+                picture_control_set_ptr->prune_unipred_at_me = 1;
         else
-            picture_control_set_ptr->prune_unipred_at_me = 1;
+            picture_control_set_ptr->prune_unipred_at_me = sequence_control_set_ptr->static_config.prune_unipred_me;
+
         //CHKN: Temporal MVP should be disabled for pictures beloning to 4L MiniGop preceeded by 5L miniGOP. in this case the RPS is wrong(known issue). check RPS construction for more info.
         if ((sequence_control_set_ptr->static_config.hierarchical_levels == 4 && picture_control_set_ptr->hierarchical_levels == 3) ||
             picture_control_set_ptr->slice_type == I_SLICE)
